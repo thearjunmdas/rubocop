@@ -133,7 +133,6 @@ module RuboCop
 
         def shareable_constant_value?(node)
           return false if target_ruby_version < 3.0
-          return false if node.nil?
 
           recent_shareable_value? node
         end

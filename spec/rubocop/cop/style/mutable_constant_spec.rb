@@ -43,11 +43,10 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
   end
 
-  shared_examples 'freezing all constants' do |o|
+  shared_examples 'literals that are frozen' do |o|
     let(:prefix) { o }
 
     it_behaves_like 'immutable objects', '[1, 2, 3]'
-    it_behaves_like 'immutable objects', 'Set[1, 2]'
     it_behaves_like 'immutable objects', '%w(a b c)'
     it_behaves_like 'immutable objects', '{ a: 1, b: 2 }'
     it_behaves_like 'immutable objects', "'str'"
@@ -62,11 +61,10 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     it_behaves_like 'immutable objects', "::ENV['foo']"
   end
 
-  shared_examples 'not freezing all constants' do |o|
+  shared_examples 'literals that are not frozen' do |o|
     let(:prefix) { o }
 
     it_behaves_like 'mutable objects', '[1, 2, 3]'
-    it_behaves_like 'immutable objects', 'Set[1, 2]'
     it_behaves_like 'mutable objects', '%w(a b c)'
     it_behaves_like 'mutable objects', '{ a: 1, b: 2 }'
     it_behaves_like 'mutable objects', "'str'"
@@ -198,10 +196,10 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
 
       context 'when using shareable_constant_value' do
-        it_behaves_like 'freezing all constants', '# shareable_constant_value: literal'
-        it_behaves_like 'freezing all constants', '# shareable_constant_value: experimental_everything'
-        it_behaves_like 'freezing all constants', '# shareable_constant_value: experimental_copy'
-        it_behaves_like 'not freezing all constants', '# shareable_constant_value: none'
+        it_behaves_like 'literals that are frozen', '# shareable_constant_value: literal'
+        it_behaves_like 'literals that are frozen', '# shareable_constant_value: experimental_everything'
+        it_behaves_like 'literals that are frozen', '# shareable_constant_value: experimental_copy'
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: none'
       end
 
       it 'raises offense when shareable_constant_value is specified as an inline comment' do
@@ -287,10 +285,10 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
 
       context 'when using shareable_constant_values' do
-        it_behaves_like 'not freezing all constants', '# shareable_constant_value: literal'
-        it_behaves_like 'not freezing all constants', '# shareable_constant_value: experimental_everything'
-        it_behaves_like 'not freezing all constants', '# shareable_constant_value: experimental_copy'
-        it_behaves_like 'not freezing all constants', '# shareable_constant_value: none'
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: literal'
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: experimental_everything'
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: experimental_copy'
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: none'
       end
     end
 
