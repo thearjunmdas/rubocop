@@ -55,7 +55,19 @@ RSpec.describe RuboCop::MagicComment do
 
   include_examples 'magic comment', '# shareable_constant_value: literal', shareable_constant_value: 'literal'
 
+  include_examples 'magic comment', '# shareable_constant_value:literal', shareable_constant_value: 'literal'
+
+  include_examples 'magic comment', '# shareable-constant-value: literal', shareable_constant_value: 'literal'
+
+  include_examples 'magic comment', '# SHAREABLE-CONSTANT-VALUE: literal', shareable_constant_value: 'literal'
+
+  include_examples 'magic comment', '# sHaReaBLE-CoNstANT-ValUE: literal', shareable_constant_value: 'literal'
+
   include_examples 'magic comment', '# shareable_constant_value: none', shareable_constant_value: 'none'
+
+  include_examples 'magic comment', '# xyz shareable_constant_value: literal'
+
+  include_examples 'magic comment', '# xyz shareable_constant_value: literal xyz'
 
   include_examples(
     'magic comment',

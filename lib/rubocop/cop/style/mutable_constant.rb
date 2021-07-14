@@ -84,22 +84,21 @@ module RuboCop
         end
 
         def strict_check(value)
-          return if shareable_constant_value?(value)
           return if immutable_literal?(value)
           return if operation_produces_immutable_object?(value)
           return if frozen_string_literal?(value)
+          return if shareable_constant_value?(value)
 
           add_offense(value) { |corrector| autocorrect(corrector, value) }
         end
 
         def check(value)
-          return if shareable_constant_value?(value)
-
           range_enclosed_in_parentheses = range_enclosed_in_parentheses?(value)
           return unless mutable_literal?(value) ||
                         target_ruby_version <= 2.7 && range_enclosed_in_parentheses
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?
+          return if shareable_constant_value?(value)
 
           add_offense(value) { |corrector| autocorrect(corrector, value) }
         end
