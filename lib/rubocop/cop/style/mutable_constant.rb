@@ -53,6 +53,42 @@ module RuboCop
       #     end
       #   end.freeze
       class MutableConstant < Base
+        # Handles magic comment shareable_constant_value with O(n ^ 2) complexity
+        # n - number of lines in the source
+        # Iterates over all lines before a CONSTANT
+        # until it reaches shareable_constant_value
+        module ShareableConstantValue
+          module_function
+
+          def recent_shareable_value?(node)
+            shareable_constant_comment = magic_comment_in_scope node
+            return false if shareable_constant_comment.nil?
+
+            shareable_constant_value = MagicComment.parse(shareable_constant_comment)
+                                                   .shareable_constant_value
+            shareable_constant_value_enabled? shareable_constant_value
+          end
+
+          # Identifies the most recent magic comment with valid shareable constant values
+          # thats in scope for this node
+          def magic_comment_in_scope(node)
+            processed_source_till_node(node).reverse_each.find do |line|
+              MagicComment.parse(line).valid_shareable_constant_value?
+            end
+          end
+
+          private
+
+          def processed_source_till_node(node)
+            processed_source.lines[0..(node.last_line - 1)]
+          end
+
+          def shareable_constant_value_enabled?(value)
+            %w[literal experimental_everything experimental_copy].include? value
+          end
+        end
+        private_constant :ShareableConstantValue
+
         include ShareableConstantValue
         include FrozenStringLiteral
         include ConfigurableEnforcedStyle
